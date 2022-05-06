@@ -1,5 +1,5 @@
-from graphRenderingWindow import *
-
+from graphrenderingwindow import *
+from math import inf
 #This graph represents the frequency of one letter appearing with another letter in the possible wordle answers.
 #Two nodes share an edge for each time their letters appear in a word together.
 #The letter of a node is determined by its place in the array, A = 0, B = 1, etc.
@@ -31,8 +31,50 @@ wordleGraph = [[1208,627,673,811,1529,314,623,615,958,146,590,1246,821,1122,777,
 [203,40,29,47,216,23,24,27,141,2,20,49,47,64,154,34,1,71,111,52,58,7,19,2,57,78]]
 labels = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 #We want to compute a maximal spanning tree and analyze clustering behaviour for the graph.
-    
 
+#Start with a minimal spanning tree for a bit of fun
+def minimalspanningtree(graph):
+    minimaltree = []
+    graphCopy = graph.copy()
+    coveredVertices = []
+    #Eliminating loops
+    i = 0
+    while i < len(graphCopy) :
+        graphCopy[i][i] = inf
+        j = 0
+        while j < len(graphCopy) :
+            if graphCopy[i][j] == 0:
+                graphCopy[i][j] = inf
+            j+=1
+        i+=1
+    currVertexIndex = 0
+    for vertex in graphCopy :
+        #print("{} {}".format(labels[graph.index(vertex)], vertex))
+        #lowest will be the edge of the vertex with the lowest weight
+        lowest = 0
+        index = 0
+        for edge in vertex :
+            #Finding the lowest extant edge that doesn't point to a vertex in the tree already
+            if vertex[lowest] == 0 or (edge < vertex[lowest]  and coveredVertices.count(index) == 0):
+                print("{} {} {}".format(vertex[lowest] == 0 , edge < vertex[lowest], coveredVertices.count(index) == 0))
+                lowest = index
+            index += 1
+        coveredVertices.append(lowest)
+        #print(coveredVertices)
+        #Build the new vertex of the tree
+        newVertex = vertex.copy()
+        for edge in newVertex :
+            if edge is not vertex[lowest] or edge is inf:
+                newVertex[newVertex.index(edge)] = 0
+        minimaltree.append(newVertex)
+    #For some reason this code always addes an extra vertex, making a loop. So we remove the last one to fix that.
+    index = len(minimaltree)-1
+    print("{} {}".format(labels[index],minimaltree[index]))
+    print("{} {}".format(labels[minimaltree[minimaltree[index][0]][0]], minimaltree[minimaltree[index][0]]))
+    
+    return minimaltree
+
+#print(minimalspanningtree(wordleGraph))
 window = GraphWindow()
-window.drawLabelledGraph(wordleGraph, labels)
+window.drawLabelledGraph(minimalspanningtree(makeRandomGraph(5)), labels)
 

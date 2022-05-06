@@ -25,8 +25,12 @@ class GraphWindow(GraphWin):
             edgeIndex = 0
             for edge in vertex :
                 if edge>0 :
-                    edgeGraphic = Line(currVertexCenter,self.convertToCartesian(self.radius,2*pi/len(graph)*edgeIndex))
-                    #Divides the value by the average to get propotional widths
+                    endpoint = self.convertToCartesian(self.radius,2*pi/len(graph)*edgeIndex)
+                    edgeGraphic = Line(currVertexCenter,endpoint)
+                    #determines whether or not we need a loop
+                    if endpoint.getX() == currVertexCenter.getX() and endpoint.getY() == currVertexCenter.getY() :
+                        edgeGraphic = Circle(self.convertToCartesian(self.radius + 15,2*pi/len(graph)*index) ,20)
+                    #Divides the value by the average to get propotional widths                        
                     edgeGraphic.setWidth((int)(edge/300.0))
                     edgeGraphic.draw(self)
                     
@@ -59,7 +63,7 @@ def makeRandomGraph(size):
         count2 = 0
         while count2 < size :
             edge = random.randint(0,10)
-            if random.random() > 0.1 :
+            if random.random() > 1 :
                 edge = 0
             node.append(edge)
             
@@ -68,4 +72,5 @@ def makeRandomGraph(size):
         count+=1
     return graph
 
-
+#window = GraphWindow()
+#window.drawGraph(makeRandomGraph(25))

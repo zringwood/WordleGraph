@@ -1,5 +1,6 @@
 from graphrenderingwindow import *
 from math import inf
+from random import randint
 #This graph represents the frequency of one letter appearing with another letter in the possible wordle answers.
 #Two nodes share an edge for each time their letters appear in a word together.
 #The letter of a node is determined by its place in the array, A = 0, B = 1, etc.
@@ -30,51 +31,90 @@ wordleGraph = [[1208,627,673,811,1529,314,623,615,958,146,590,1246,821,1122,777,
 [570,220,200,301,622,130,227,169,242,29,206,398,243,332,489,316,6,413,564,343,253,57,107,32,70,57],
 [203,40,29,47,216,23,24,27,141,2,20,49,47,64,154,34,1,71,111,52,58,7,19,2,57,78]]
 labels = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-#We want to compute a maximal spanning tree and analyze clustering behaviour for the graph.
+#We want to compute a minimal spanning tree and analyze clustering behaviour for the graph.
 
-#Start with a minimal spanning tree for a bit of fun
-def minimalspanningtree(graph):
-    minimaltree = []
-    graphCopy = graph.copy()
-    coveredVertices = []
-    #Eliminating loops
+#Helper method for isPath. This takes a list of nodes and confirms whether we've visited the current v1 efore, breaking loops.
+def _isPath(visitedNodes, adjMatrix, v1, v2) :
+    if v1 == v2 :
+        return True
+    #updating the nodelist
+    visitedNodes.append(v1)
+    #Testing for each edge of the vertex v1
+    for i in range(len(adjMatrix[v1])) :
+        if adjMatrix[v1][i] > 0 and visitedNodes.count(i) == 0:
+            return _isPath(visitedNodes,adjMatrix, i, v2)
+    return False
+
+#Helper Method, returns True if a path exists between the two verticies. Needs to be passed two indices indicating the vertices' places in the given adjacency matrix
+#Uses a depth-first search.
+#This method does NOT detect the presense of a loop. It treats two equal indices as a trivial path. 
+def isPath(adjMatrix, v1, v2):
+    #Path consisting of one vertex
+    if v1 == v2 :
+        return True
+    #Testing for each edge of the vertex v1
+    for i in range(len(adjMatrix[v1])) :
+        if adjMatrix[v1][i] > 0 :
+            return _isPath([v1],adjMatrix, i, v2)
+    return False
+
+#Start with a minimal spanning tree.
+#Kruskal's Algorithm
+def minimalspanningtree(graph) :
+    graphCopy = []
+    #Having the graph in a one dimensional array makes for easier searching.
+    for vertex in graph:
+        graphCopy = graphCopy + vertex
+    #Eliminating empty edges
     i = 0
     while i < len(graphCopy) :
-        graphCopy[i][i] = inf
-        j = 0
-        while j < len(graphCopy) :
-            if graphCopy[i][j] == 0:
-                graphCopy[i][j] = inf
-            j+=1
-        i+=1
-    currVertexIndex = 0
-    for vertex in graphCopy :
-        #print("{} {}".format(labels[graph.index(vertex)], vertex))
-        #lowest will be the edge of the vertex with the lowest weight
-        lowest = 0
-        index = 0
-        for edge in vertex :
-            #Finding the lowest extant edge that doesn't point to a vertex in the tree already
-            if vertex[lowest] == 0 or (edge < vertex[lowest]  and coveredVertices.count(index) == 0):
-                print("{} {} {}".format(vertex[lowest] == 0 , edge < vertex[lowest], coveredVertices.count(index) == 0))
-                lowest = index
-            index += 1
-        coveredVertices.append(lowest)
-        #print(coveredVertices)
-        #Build the new vertex of the tree
-        newVertex = vertex.copy()
-        for edge in newVertex :
-            if edge is not vertex[lowest] or edge is inf:
-                newVertex[newVertex.index(edge)] = 0
-        minimaltree.append(newVertex)
-    #For some reason this code always addes an extra vertex, making a loop. So we remove the last one to fix that.
-    index = len(minimaltree)-1
-    print("{} {}".format(labels[index],minimaltree[index]))
-    print("{} {}".format(labels[minimaltree[minimaltree[index][0]][0]], minimaltree[minimaltree[index][0]]))
-    
-    return minimaltree
+       if graphCopy[i] == 0 :
+           graphCopy[i] = inf
+       i+=1
+    print(graphCopy)
+    #Initialize an empty list of edges. All values initially 0.
+    #They don't need to be infinite because we get the minimum value from the graphCopy and add it without comparing to the stored values in the tree.
+    minimalTree = [[0] * len(graph) for i in range(len(graph))]
 
-#print(minimalspanningtree(wordleGraph))
+    i=0
+    while i < len(graphCopy) :
+        lowest = min(graphCopy)
+        index = graphCopy.index(lowest)
+        #print(lowest)
+        #Here we check and see if the edge connects two trees
+        if not isPath(minimalTree, int(index/len(graph)), int(index%len(graph))) :
+            minimalTree[int(index/len(graph))][int(index%len(graph))] = lowest
+            
+        #Either way, we never want to deal with this edge again. 
+        graphCopy[index] = inf
+        i+=1
+
+    print(minimalTree)
+    return minimalTree
+    #Bugtesting Method
+def genRandomSimpleGraph(graphsize, probability) :
+    graph = []
+    for i in range(graphsize) :
+        graph.append([[0] * graphsize])
+        for j in range(graphsize) :
+            if randint(0,100) < probability :
+                graph[i][j] = 0
+        graph[i][i] = 0
+    return graph
+###graph = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 1, 0, 0, 0]]
+##print(graph)
+##window0 = GraphWindow()
+##window0.drawLabelledGraph(graph, labels)
+##for i in range(graphsize) :
+##    for j in range(graphsize) :
+##        print("Testing {} and {}".format(labels[i], labels[j]))
+##        print(isPath(graph,i,j))
+
+graph = [[0,3,2,1,5],[3,0,4,2,1],[2,4,0,3,1],[1,2,3,0,1],[5,1,1,1,0]]
+
+window0 = GraphWindow()
+window0.drawLabelledGraph(graph, labels)
 window = GraphWindow()
-window.drawLabelledGraph(minimalspanningtree(makeRandomGraph(5)), labels)
+window.drawGraph(minimalspanningtree(graph))
+#window.drawLabelledGraph(wordleGraph,labels)
 

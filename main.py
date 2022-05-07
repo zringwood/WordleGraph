@@ -37,12 +37,11 @@ labels = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R
 def _isPath(visitedNodes, adjMatrix, v1, v2) :
     if v1 == v2 :
         return True
-    #updating the nodelist
-    visitedNodes.append(v1)
     #Testing for each edge of the vertex v1
     for i in range(len(adjMatrix[v1])) :
         if adjMatrix[v1][i] > 0 and visitedNodes.count(i) == 0:
-            return _isPath(visitedNodes,adjMatrix, i, v2)
+            if _isPath(list(visitedNodes + [i]),adjMatrix, i, v2):
+                return True
     return False
 
 #Helper Method, returns True if a path exists between the two verticies. Needs to be passed two indices indicating the vertices' places in the given adjacency matrix
@@ -55,7 +54,8 @@ def isPath(adjMatrix, v1, v2):
     #Testing for each edge of the vertex v1
     for i in range(len(adjMatrix[v1])) :
         if adjMatrix[v1][i] > 0 :
-            return _isPath([v1],adjMatrix, i, v2)
+             if _isPath([v1],adjMatrix, i, v2):
+                 return True
     return False
 
 #Start with a minimal spanning tree.
@@ -81,40 +81,38 @@ def minimalspanningtree(graph) :
         lowest = min(graphCopy)
         index = graphCopy.index(lowest)
         #print(lowest)
-        #Here we check and see if the edge connects two trees
+        #Here we check and see if the edge connects two trees. If there's no path between the endpoints of a potential edge then we can connect it.
         if not isPath(minimalTree, int(index/len(graph)), int(index%len(graph))) :
             minimalTree[int(index/len(graph))][int(index%len(graph))] = lowest
-            
+            minimalTree[int(index%len(graph))][int(index/len(graph))] = lowest
         #Either way, we never want to deal with this edge again. 
         graphCopy[index] = inf
         i+=1
 
-    print(minimalTree)
     return minimalTree
-    #Bugtesting Method
-def genRandomSimpleGraph(graphsize, probability) :
-    graph = []
+    #Bugtesting Methods
+def getRandomSimpleGraph(graphsize, probability) :
+    graph = [[0] * graphsize for i in range(graphsize)]
+    print(graph)
     for i in range(graphsize) :
-        graph.append([[0] * graphsize])
         for j in range(graphsize) :
             if randint(0,100) < probability :
-                graph[i][j] = 0
+                graph[i][j] = 1
         graph[i][i] = 0
     return graph
-###graph = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 1, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 1, 0, 0, 0]]
-##print(graph)
-##window0 = GraphWindow()
-##window0.drawLabelledGraph(graph, labels)
-##for i in range(graphsize) :
-##    for j in range(graphsize) :
-##        print("Testing {} and {}".format(labels[i], labels[j]))
-##        print(isPath(graph,i,j))
-
-graph = [[0,3,2,1,5],[3,0,4,2,1],[2,4,0,3,1],[1,2,3,0,1],[5,1,1,1,0]]
-
+def getRandomWeightedGraph(graphsize,probability,minWeight,maxWeight) :
+    graph = [[0] * graphsize for i in range(graphsize)]
+    print(graph)
+    for i in range(graphsize) :
+        for j in range(graphsize) :
+            if randint(0,100) < probability :
+                graph[i][j] = randint(minWeight,maxWeight)
+        graph[i][i] = 0
+    return graph
 window0 = GraphWindow()
-window0.drawLabelledGraph(graph, labels)
+window0.drawLabelledGraph(wordleGraph, labels)
 window = GraphWindow()
-window.drawGraph(minimalspanningtree(graph))
+mingraph=minimalspanningtree(wordleGraph)
+window.drawLabelledGraph(mingraph, labels)
 #window.drawLabelledGraph(wordleGraph,labels)
 

@@ -1,7 +1,7 @@
 #This Class is used to draw graphs to a window.
 #It is noninteractive and draws the graphs by laying out each node in a circle.
 from graphics import *
-from math import pi, sqrt, sin, cos
+from math import pi, sqrt, sin, cos, inf
 #TODO delete this it's only here for testing
 import random
 
@@ -30,9 +30,12 @@ class GraphWindow(GraphWin):
                     #determines whether or not we need a loop
                     if endpoint.getX() == currVertexCenter.getX() and endpoint.getY() == currVertexCenter.getY() :
                         edgeGraphic = Circle(self.convertToCartesian(self.radius + 15,2*pi/len(graph)*index) ,20)
-                    #Divides the value by the average to get propotional widths                        
-                    edgeGraphic.setWidth((int)(edge/300.0))
-                    edgeGraphic.draw(self)
+                    #Divides the value by the average to get propotional widths
+                    if edge != inf :
+                        edgeGraphic.setWidth((int)(edge/300))
+                        edgeGraphic.draw(self)
+                        
+                    
                     
                 edgeIndex += 1
             index+=1
@@ -62,7 +65,7 @@ def makeRandomGraph(size):
         node = []
         count2 = 0
         while count2 < size :
-            edge = random.randint(0,10)
+            edge = random.randint(1,10)
             if random.random() > 1 :
                 edge = 0
             node.append(edge)

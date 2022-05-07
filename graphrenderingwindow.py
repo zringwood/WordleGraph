@@ -16,8 +16,9 @@ class GraphWindow(GraphWin):
     #Returns a point object with cartesian versions of the given polar coords
     def convertToCartesian(self,radius,theta) :
         return Point(radius * cos(theta), radius * sin(theta))
-     #Draws a graph with the nodes labelled according to the given list.
-    def drawLabelledGraph(self, graph, labels) :
+    #Draws a graph with the nodes labelled according to the given list.
+    #Needs the average weight of the graph's edges. 
+    def drawLabelledWeightedGraph(self, graph, labels,avgWeight) :
         index = 0
         for vertex in graph :
             #Calling this a couple times so we save it here
@@ -32,7 +33,7 @@ class GraphWindow(GraphWin):
                         edgeGraphic = Circle(self.convertToCartesian(self.radius + 15,2*pi/len(graph)*index) ,20)
                     #Divides the value by the average to get propotional widths
                     if edge != inf :
-                        edgeGraphic.setWidth((int)(edge/300))
+                        edgeGraphic.setWidth((int)(edge/avgWeight))
                         edgeGraphic.draw(self)
                         
                     
@@ -51,6 +52,11 @@ class GraphWindow(GraphWin):
                 label.setFill("black")
                 label.draw(self)
             index+=1
+    def drawWeightedGraph(self,graph,avgWeight):
+        self.drawLabelledWeightedGraph(graph,[],avgWeight)
+    #Draws a graph with the nodes labelled according to the given list.
+    def drawLabelledGraph(self, graph, labels) :
+        self.drawLabelledWeightedGraph(graph,labels,1)
     #Draws a graph such that each node is laid out on a circle
     def drawGraph(self, graph):
         self.drawLabelledGraph(graph,[])

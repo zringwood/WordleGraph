@@ -110,9 +110,9 @@ def getRandomWeightedGraph(graphsize,probability,minWeight,maxWeight) :
         graph[i][i] = 0
     return graph
 window0 = GraphWindow()
-window0.drawLabelledGraph(wordleGraph, labels)
+window0.drawLabelledWeightedGraph(wordleGraph, labels,315)
 window = GraphWindow()
 mingraph=minimalspanningtree(wordleGraph)
-window.drawLabelledGraph(mingraph, labels)
+window.drawLabelledWeightedGraph(mingraph, labels,10)
 #window.drawLabelledGraph(wordleGraph,labels)
 

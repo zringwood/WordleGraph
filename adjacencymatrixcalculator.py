@@ -3,7 +3,7 @@
 #Verticies share an edge IFF the letters they represent are in the same word.
 legalguesses = open("wordlelegalguesses.txt", "r")
 
-graph = [[0] * 26 for i in range(26*5)]
+graph = [[0] * (26*5) for i in range(26*5)]
 
 #For every legal guess in the file, we want to add one edge for letter in the word
 nextword = legalguesses.readline()
@@ -11,7 +11,7 @@ while nextword != "" :
     for i in range(len(nextword)-1):
         for j in range(len(nextword)-1):
             if i != j : 
-                graph[ord(nextword[i]) - ord('a') + i*26][ord(nextword[j]) - ord('a')] += 1
+                graph[ord(nextword[i]) - ord('a') + i*26][ord(nextword[j]) - ord('a') + j*26] += 1
     nextword = legalguesses.readline()
 #Writes the graph to a string
 graphstring = "["

@@ -64,7 +64,7 @@ class GraphWindow(GraphWin):
         self.drawLabelledGraph(graph,[])
     #Draws a graph such that each set of given length is drawn on a seperate horizontal portion of the screen
     #Doesn't support loops
-    def drawLevelledGraph(self,graph,levellength):
+    def drawLevelledLabelledGraph(self,graph,levellength,labels):
         #Need the lower left of the window to be 0, 0
         self.setCoords(0, 0, 600, 600)
         numLevels = len(graph)/levellength
@@ -81,6 +81,15 @@ class GraphWindow(GraphWin):
             vertexCircle = Circle(currVertexCenter,10)
             vertexCircle.setFill("white")
             vertexCircle.draw(self)
+            #draws labels if applicable
+            if len(labels) > 0 :
+                label = Text(currVertexCenter,labels[i])
+                label.setFill("black")
+                label.draw(self)
+    #Draws a graph such that each set of given length is drawn on a seperate horizontal portion of the screen
+    #Doesn't support loops
+    def drawLevelledGraph(self,graph,levellength):
+        self.drawLevelledLabelledGraph(graph,levellength,[])
     
             
         

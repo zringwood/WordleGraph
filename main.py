@@ -118,6 +118,6 @@ for line in wordleGraph :
         line[cell] = int(re.sub("[\[,\] ]","",nextline[cell]))
     
 window = GraphWindow()
-window.drawLevelledGraph(wordleGraph, 26)
+window.drawLevelledLabelledGraph(wordleGraph, 26,labels)
 
 

@@ -1,6 +1,7 @@
 from graphrenderingwindow import *
 from math import inf
 from random import randint
+import re
 #This graph represents the frequency of one letter appearing with another letter in the possible wordle answers.
 #Two nodes share an edge for each time their letters appear in a word together.
 #The letter of a node is determined by its place in the array, A = 0, B = 1, etc.
@@ -30,8 +31,10 @@ wordleGraph = [[1208,627,673,811,1529,314,623,615,958,146,590,1246,821,1122,777,
 [93,17,21,51,214,18,4,12,91,1,2,54,38,39,74,19,0,46,88,37,30,9,10,2,32,2],
 [570,220,200,301,622,130,227,169,242,29,206,398,243,332,489,316,6,413,564,343,253,57,107,32,70,57],
 [203,40,29,47,216,23,24,27,141,2,20,49,47,64,154,34,1,71,111,52,58,7,19,2,57,78]]
-labels = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+labels = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 #We want to compute a minimal spanning tree and analyze clustering behaviour for the graph.
+
+
 
 #Helper method for isPath. This takes a list of nodes and confirms whether we've visited the current v1 efore, breaking loops.
 def _isPath(visitedNodes, adjMatrix, v1, v2) :
@@ -71,7 +74,6 @@ def minimalspanningtree(graph) :
        if graphCopy[i] == 0 :
            graphCopy[i] = inf
        i+=1
-    print(graphCopy)
     #Initialize an empty list of edges. All values initially 0.
     #They don't need to be infinite because we get the minimum value from the graphCopy and add it without comparing to the stored values in the tree.
     minimalTree = [[0] * len(graph) for i in range(len(graph))]
@@ -93,7 +95,6 @@ def minimalspanningtree(graph) :
     #Bugtesting Methods
 def getRandomSimpleGraph(graphsize, probability) :
     graph = [[0] * graphsize for i in range(graphsize)]
-    print(graph)
     for i in range(graphsize) :
         for j in range(graphsize) :
             if randint(0,100) < probability :
@@ -102,17 +103,21 @@ def getRandomSimpleGraph(graphsize, probability) :
     return graph
 def getRandomWeightedGraph(graphsize,probability,minWeight,maxWeight) :
     graph = [[0] * graphsize for i in range(graphsize)]
-    print(graph)
     for i in range(graphsize) :
         for j in range(graphsize) :
             if randint(0,100) < probability :
                 graph[i][j] = randint(minWeight,maxWeight)
         graph[i][i] = 0
     return graph
-window0 = GraphWindow()
-window0.drawLabelledWeightedGraph(wordleGraph, labels,315)
+
+graphfile = open("guessesgraph.txt","r")
+wordleGraph = [[0] * 26*5 for i in range(26*5)]
+for line in wordleGraph :
+    nextline = graphfile.readline().split(",")
+    for cell in range(len(line)) :
+        line[cell] = int(re.sub("[\[,\] ]","",nextline[cell]))
+    
 window = GraphWindow()
-mingraph=minimalspanningtree(wordleGraph)
-window.drawLabelledWeightedGraph(mingraph, labels,10)
-#window.drawLabelledGraph(wordleGraph,labels)
+window.drawLevelledGraph(wordleGraph, 26)
+
 

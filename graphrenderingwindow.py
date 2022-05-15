@@ -1,10 +1,10 @@
 #This Class is used to draw graphs to a window.
 #It is noninteractive and draws the graphs by laying out each node in a circle.
 from graphics import *
-from math import pi, sqrt, sin, cos, inf
+from math import pi, sqrt, sin, cos, inf, floor
 #TODO delete this it's only here for testing
 import random
-
+labels = "abcdefghijklmnopqrstuvwxyz"
 class GraphWindow(GraphWin):
     def __init__(self):
         super().__init__("Graph Display", 600,600,False)
@@ -19,6 +19,8 @@ class GraphWindow(GraphWin):
     #Draws a graph with the nodes labelled according to the given list.
     #Needs the average weight of the graph's edges. 
     def drawLabelledWeightedGraph(self, graph, labels,avgWeight) :
+        #Center of the canvas treated as 0,0
+        self.setCoords(-250, -250, 250, 250)
         index = 0
         for vertex in graph :
             #Calling this a couple times so we save it here
@@ -60,9 +62,28 @@ class GraphWindow(GraphWin):
     #Draws a graph such that each node is laid out on a circle
     def drawGraph(self, graph):
         self.drawLabelledGraph(graph,[])
-   
-    def drawTree(self, graph):
-        pass
+    #Draws a graph such that each set of given length is drawn on a seperate horizontal portion of the screen
+    #Doesn't support loops
+    def drawLevelledGraph(self,graph,levellength):
+        #Need the lower left of the window to be 0, 0
+        self.setCoords(0, 0, 600, 600)
+        numLevels = len(graph)/levellength
+        levelSeparation = self.height/numLevels
+        for i in range(len(graph)):
+            currVertexCenter = Point(10 + (self.width/levellength)*(i%levellength),levelSeparation/2 + levelSeparation*floor(i/levellength))
+            for j in range(len(graph[i])): 
+                #Draw the edges
+                endpoint = Point(10 + (self.width/levellength)*(j%levellength),levelSeparation/2 + levelSeparation*floor(j/levellength))
+                edgeGraphic = Line(currVertexCenter,endpoint)
+                edgeGraphic.setWidth(1)
+                edgeGraphic.draw(self)
+            #Draw the vertex
+            vertexCircle = Circle(currVertexCenter,10)
+            vertexCircle.setFill("white")
+            vertexCircle.draw(self)
+    
+            
+        
 #TODO: temp code for testing remember to delete
 def makeRandomGraph(size):
     graph = []
@@ -74,6 +95,7 @@ def makeRandomGraph(size):
             edge = random.randint(1,10)
             if random.random() > 1 :
                 edge = 0
+                
             node.append(edge)
             
             count2+=1
@@ -81,5 +103,3 @@ def makeRandomGraph(size):
         count+=1
     return graph
 
-#window = GraphWindow()
-#window.drawGraph(makeRandomGraph(25))

@@ -75,8 +75,11 @@ class GraphWindow(GraphWin):
                 #Draw the edges
                 endpoint = Point(10 + (self.width/levellength)*(j%levellength),levelSeparation/2 + levelSeparation*floor(j/levellength))
                 edgeGraphic = Line(currVertexCenter,endpoint)
-                edgeGraphic.setWidth(1)
-                edgeGraphic.draw(self)
+                if graph[i][j] > 0 :
+                    edgeGraphic.setWidth(1)
+                    edgeGraphic.draw(self)
+                   
+                    
             #Draw the vertex
             vertexCircle = Circle(currVertexCenter,10)
             vertexCircle.setFill("white")

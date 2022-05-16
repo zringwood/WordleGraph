@@ -116,8 +116,10 @@ for line in wordleGraph :
     nextline = graphfile.readline().split(",")
     for cell in range(len(line)) :
         line[cell] = int(re.sub("[\[,\] ]","",nextline[cell]))
-    
+
 window = GraphWindow()
 window.drawLevelledLabelledGraph(wordleGraph, 26,labels)
+window0 = GraphWindow()
+window0.drawLevelledLabelledGraph(minimalspanningtree(wordleGraph), 26, labels)
 
 

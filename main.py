@@ -109,7 +109,15 @@ def getRandomWeightedGraph(graphsize,probability,minWeight,maxWeight) :
                 graph[i][j] = randint(minWeight,maxWeight)
         graph[i][i] = 0
     return graph
-
+#Returns the local clustering coefficient of a vertex, given by the index of the vertex
+def getLocalClusteringCoefficient(graph, vertex):
+    #Finding the total number of edges between vertices in the neighbourhood of the vertex
+    total = 0
+    for i in range(len(graph[vertex])):
+        if graph[vertex][i] > 0 :
+            total += len(graph[i]) - graph[i].count(0)
+    return (2*total)/(len(graph)*(len(graph)-1))
+#Here we're reading in the proper wordle graph that takes into account letter placement
 graphfile = open("guessesgraph.txt","r")
 wordleGraph = [[0] * 26*5 for i in range(26*5)]
 for line in wordleGraph :
@@ -117,9 +125,7 @@ for line in wordleGraph :
     for cell in range(len(line)) :
         line[cell] = int(re.sub("[\[,\] ]","",nextline[cell]))
 
-window = GraphWindow()
-window.drawLevelledLabelledGraph(wordleGraph, 26,labels)
-window0 = GraphWindow()
-window0.drawLevelledLabelledGraph(minimalspanningtree(wordleGraph), 26, labels)
-
+#window = GraphWindow()
+#window.drawLevelledLabelledGraph(wordleGraph, 26,labels)
+print(getLocalClusteringCoefficient(wordleGraph, randint(0,len(wordleGraph)-1)))
 

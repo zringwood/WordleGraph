@@ -93,8 +93,13 @@ class GraphWindow(GraphWin):
     #Doesn't support loops
     def drawLevelledGraph(self,graph,levellength):
         self.drawLevelledLabelledGraph(graph,levellength,[])
-    
-            
+    #clears everything on the screen
+    def clear(self):
+        self.setCoords(0,0,600,600)
+        bgrect = Rectangle(Point(0,0),Point(self.width, self.height))
+        bgrect.setFill(color_rgb(240,240,240))
+        bgrect.setOutline(color_rgb(240,240,240))
+        bgrect.draw(self)
         
 #TODO: temp code for testing remember to delete
 def makeRandomGraph(size):
@@ -114,4 +119,5 @@ def makeRandomGraph(size):
         graph.append(node)
         count+=1
     return graph
+
 

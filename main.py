@@ -128,16 +128,14 @@ def deletevertex(graph, index):
     graphcopy.pop(index)
     return graphcopy
     
-#Here we're reading in the proper wordle graph that takes into account letter placement
-##graphfile = open("guessesgraph.txt","r")
-##wordleGraph = [[0] * 26*5 for i in range(26*5)]
-##for line in wordleGraph :
-##    nextline = graphfile.readline().split(",")
-##    for cell in range(len(line)) :
-##        line[cell] = int(re.sub("[\[,\] ]","",nextline[cell]))
-wordleGraph = [[1,0,1],[3,4,6],[9,8,1]]
-print(deletevertex(wordleGraph, 2))
-print(wordleGraph)
-#window = GraphWindow()
-#window.drawLevelledLabelledGraph(wordleGraph, 26,labels)
-
+##Here we're reading in the proper wordle graph that takes into account letter placement
+graphfile = open("guessesgraph.txt","r")
+wordleGraph = [[0] * 26*5 for i in range(26*5)]
+for line in wordleGraph :
+    nextline = graphfile.readline().split(",")
+    for cell in range(len(line)) :
+        line[cell] = int(re.sub("[\[,\] ]","",nextline[cell]))
+window = GraphWindow()
+window.drawLevelledLabelledGraph(wordleGraph, 26,labels)
+window.clear()
+window.drawLevelledLabelledGraph(deletevertex(wordleGraph, randint(0,26*5)), 26, labels)

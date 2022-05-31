@@ -117,15 +117,27 @@ def getLocalClusteringCoefficient(graph, vertex):
         if graph[vertex][i] > 0 :
             total += len(graph[i]) - graph[i].count(0)
     return (2*total)/(len(graph)*(len(graph)-1))
+#Returns the adjancency matrix of the passed graph with the given vertex and all edges removes
+#vertex given by index in the matrix
+def deletevertex(graph, index):
+    graphcopy = []
+    for vertex in graph:
+        nextvert = vertex.copy()
+        nextvert.pop(index)
+        graphcopy.append(nextvert)
+    graphcopy.pop(index)
+    return graphcopy
+    
 #Here we're reading in the proper wordle graph that takes into account letter placement
-graphfile = open("guessesgraph.txt","r")
-wordleGraph = [[0] * 26*5 for i in range(26*5)]
-for line in wordleGraph :
-    nextline = graphfile.readline().split(",")
-    for cell in range(len(line)) :
-        line[cell] = int(re.sub("[\[,\] ]","",nextline[cell]))
-
+##graphfile = open("guessesgraph.txt","r")
+##wordleGraph = [[0] * 26*5 for i in range(26*5)]
+##for line in wordleGraph :
+##    nextline = graphfile.readline().split(",")
+##    for cell in range(len(line)) :
+##        line[cell] = int(re.sub("[\[,\] ]","",nextline[cell]))
+wordleGraph = [[1,0,1],[3,4,6],[9,8,1]]
+print(deletevertex(wordleGraph, 2))
+print(wordleGraph)
 #window = GraphWindow()
 #window.drawLevelledLabelledGraph(wordleGraph, 26,labels)
-print(getLocalClusteringCoefficient(wordleGraph, randint(0,len(wordleGraph)-1)))
 
